@@ -53,9 +53,6 @@ class ExcelToJson() {
         var departureRelationsJson = ""
         if (row.getCell(CELL_OF_NUMBER_RETURN_RELATIONS).numericCellValue.toInt() <= 10) {
             try {
-                if (startPoint == "Брајчино") {
-                    println(startPoint)
-                }
                 while (row.getCell(STATION_NAME).toString().trim() != endPoint.trim()) {
                     currentRow++
                     row = sheet.getRow(currentRow)
@@ -68,6 +65,7 @@ class ExcelToJson() {
             }
 
             for (i in 17 until numberOfReturningRelations + 17) {
+                var arrivalTime = getArrivalTime(currentRow = currentRow, sheet = sheet, cellPosition = i, isDeparture = false)
                 if (row.getCell(i).toString() == "/") {
                     continue
                 }
@@ -76,7 +74,6 @@ class ExcelToJson() {
                     note = getSpecialNote(row, i)
                 } else {
                     try {
-
                         val departureTimeH = row.getCell(i).toString().split(".")[0].padStart(2, '0')
                         val departureTimeM = row.getCell(i).toString().split(".")[1].padEnd(2, '0')
                         departureTime = "$departureTimeH:$departureTimeM"
@@ -91,6 +88,7 @@ class ExcelToJson() {
                     endPoint,
                     startPoint,
                     departureTime,
+                    arrivalTime,
                     note
                 )
                 departureRelationsJson += busRelation.toJson()
@@ -113,6 +111,7 @@ class ExcelToJson() {
                 for (j in 17 until 27) {
                     if (row.getCell(j) == null || row.getCell(j).toString() == "")
                         break
+                    val arrivalTime = getArrivalTime(currentRow = currentRow, sheet = sheet, cellPosition = j, isDeparture = false)
                     if (row.getCell(j).toString() == "/") {
                         continue
                     }
@@ -131,6 +130,7 @@ class ExcelToJson() {
                         endPoint,
                         startPoint,
                         departureTime,
+                        arrivalTime,
                         note
                     )
                     departureRelationsJson += busRelation.toJson()
@@ -153,6 +153,8 @@ class ExcelToJson() {
         var departureRelationsJson = ""
         if (row.getCell(CELL_OF_NUMBER_DEPARTURE_RELATIONS).numericCellValue.toInt() <= 10) {
             for (i in 5 until numberOfDepartureRelations + 5) {
+                var arrivalTime = getArrivalTime(currentRow = currentRow, sheet = sheet, cellPosition = i, isDeparture = true)
+
                 if (row.getCell(i).toString() == "/") {
                     continue
                 }
@@ -171,6 +173,7 @@ class ExcelToJson() {
                     startPoint,
                     endPoint,
                     departureTime,
+                    arrivalTime,
                     note
                 )
                 departureRelationsJson += busRelation.toJson()
@@ -187,8 +190,10 @@ class ExcelToJson() {
                     row = sheet.getRow(currentRow)
                 }
                 for (j in 0 until 10) {
+
                     if (row.getCell(j + 5) == null || row.getCell(j + 5).toString() == "")
                         break
+                    var arrivalTime = getArrivalTime(currentRow = currentRow, sheet = sheet, cellPosition = j + 5, isDeparture = true)
                     if (row.getCell(j + 5).toString() == "/") {
                         continue
                     }
@@ -207,6 +212,7 @@ class ExcelToJson() {
                         startPoint,
                         endPoint,
                         departureTime,
+                        arrivalTime,
                         note
                     )
                     departureRelationsJson += busRelation.toJson()
@@ -215,6 +221,31 @@ class ExcelToJson() {
         }
 
         return departureRelationsJson
+    }
+
+    private fun getArrivalTime(currentRow: Int, sheet: Sheet, cellPosition: Int, isDeparture: Boolean): String {
+        var arrivalRow = currentRow
+        while (sheet.getRow(arrivalRow).getCell(cellPosition) != null &&
+            sheet.getRow(arrivalRow).getCell(cellPosition).toString().isNotEmpty()
+        ) {
+                if (isDeparture) {
+                    arrivalRow++
+                } else {
+                    arrivalRow--
+                }
+        }
+        println(arrivalRow)
+        if (isDeparture) {
+            arrivalRow--
+        } else {
+            arrivalRow++
+        }
+        val arrivalTimeH =
+            sheet.getRow(arrivalRow).getCell(cellPosition).toString().split(".")[0].padStart(2, '0')
+        val arrivalTimeM =
+            sheet.getRow(arrivalRow).getCell(cellPosition).toString().split(".")[1].padEnd(2, '0')
+
+        return "$arrivalTimeH:$arrivalTimeM"
     }
 
     private fun getSpecialNote(row: Row, position: Int): String {

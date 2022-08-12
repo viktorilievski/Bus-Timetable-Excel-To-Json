@@ -6,6 +6,7 @@ data class BusRelation(
     private val startPoint: String,
     private val endPoint: String,
     private val departureTime: String,
+    private val arrivalTime: String,
     private val note: String
 ) {
     fun toJson(): String {
@@ -15,6 +16,7 @@ data class BusRelation(
                 "\"startPoint\": \"$startPoint\",\n" +
                 "\"endPoint\": \"$endPoint\",\n" +
                 "\"departureTime\": \"$departureTime\",\n" +
+                "\"arrivalTime\": \"$arrivalTime\",\n" +
                 "\"note\": \"$note\" },\n"
     }
 }
