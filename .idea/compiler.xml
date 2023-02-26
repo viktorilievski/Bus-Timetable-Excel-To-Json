@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="ExcelToJsonBusRelations" target="18" />
+      <module name="ExcelToJsonBusRelations" target="8" />
     </bytecodeTargetLevel>
   </component>
 </project>

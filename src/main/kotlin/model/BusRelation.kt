@@ -10,8 +10,7 @@ data class BusRelation(
     private val note: String
 ) {
     fun toJson(): String {
-        return "\"relacija${id}\":" +
-                "{ \"id\": ${id}," +
+        return "{ \"id\": ${id},\n" +
                 "\"companyName\": \"$companyName\",\n" +
                 "\"startPoint\": \"$startPoint\",\n" +
                 "\"endPoint\": \"$endPoint\",\n" +

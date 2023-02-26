@@ -16,7 +16,7 @@ class ExcelToJson() {
 
         val sheet = workBook.getSheetAt(0)
         val out: Writer = BufferedWriter(OutputStreamWriter(FileOutputStream("excelToJsonConverted.json"), "UTF-8"))
-        out.write("{\"relacii\": {")
+        out.write("{\"relacii\": [")
         var relationCounter = 0
         for (currentRowIterator in FIRST_ROW..LAST_ROW) {
             val row = sheet.getRow(currentRowIterator)
@@ -30,7 +30,7 @@ class ExcelToJson() {
                 relationCounter += row.getCell(CELL_OF_NUMBER_RETURN_RELATIONS).numericCellValue.toInt()
             }
         }
-        out.write("}\n}")
+        out.write("]\n}")
         out.close()
     }
 
@@ -46,8 +46,8 @@ class ExcelToJson() {
             e.printStackTrace()
         }
         val companyName = row.getCell(FIRST_COLUMN).toString()
-        val startPoint = row.getCell(2).toString().split(" - ")[0]
-        val endPoint = row.getCell(2).toString().split(" - ")[1]
+        val startPoint = row.getCell(2).toString().split(" - ")[0].trim()
+        val endPoint = row.getCell(2).toString().split(" - ")[1].trim()
         var departureTime: String = ""
         var note = row.getCell(LAST_COLUMN).toString()
         var departureRelationsJson = ""
@@ -146,8 +146,8 @@ class ExcelToJson() {
         var row = sheet.getRow(currentRow)
         val numberOfDepartureRelations = row.getCell(CELL_OF_NUMBER_DEPARTURE_RELATIONS).numericCellValue.toInt()
         val companyName = row.getCell(FIRST_COLUMN).toString()
-        val startPoint = row.getCell(2).toString().split(" - ")[0]
-        val endPoint = row.getCell(2).toString().split(" - ")[1]
+        val startPoint = row.getCell(2).toString().split(" - ")[0].trim()
+        val endPoint = row.getCell(2).toString().split(" - ")[1].trim()
         var departureTime: String = ""
         var note = row.getCell(LAST_COLUMN).toString()
         var departureRelationsJson = ""
